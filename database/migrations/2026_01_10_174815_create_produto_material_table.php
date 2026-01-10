@@ -11,18 +11,13 @@ return new class extends Migration
      */
    public function up(): void
 {
-    Schema::create('materials', function (Blueprint $table) {
+    Schema::create('produto_material', function (Blueprint $table) {
         $table->id();
-        $table->string('nome');
         
-        $table->string('unidade_medida')->default('unidade'); 
+        $table->foreignId('produto_id')->constrained('produtos')->onDelete('cascade');
+        $table->foreignId('material_id')->constrained('materials')->onDelete('cascade');
         
-        $table->decimal('preco_pago', 10, 2); 
-        $table->decimal('quantidade_compra', 10, 2); 
-        
-        $table->decimal('custo_por_unidade', 10, 4); 
-        
-        $table->decimal('estoque_atual', 10, 2);
+        $table->decimal('quantidade_uso', 10, 2);
         
         $table->timestamps();
     });
@@ -32,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('materials');
+        Schema::dropIfExists('produto_material');
     }
 };
