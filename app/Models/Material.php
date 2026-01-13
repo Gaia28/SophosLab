@@ -9,6 +9,7 @@ class Material extends Model
 {
     protected $fillable = [
         'nome',
+        'fornecedor',
         'unidade_medida',
         'preco_pago',
         'quantidade_compra',
