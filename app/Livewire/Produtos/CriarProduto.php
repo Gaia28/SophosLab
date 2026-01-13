@@ -15,6 +15,7 @@ class CriarProduto extends Component
     public $descricao;
     public $custo_mao_de_obra = 0;
     public $margem_lucro = 100; // Padrão 100%
+    public $quantidade_inicial = 1; // Novo campo, padrão 1
     
     // Lista de Materiais Disponíveis (para o Select)
     public $todosMateriais;
@@ -86,27 +87,28 @@ public function salvar()
     {
         $this->validate([
             'nome' => 'required|min:3',
+            'quantidade_inicial' => 'required|integer|min:1', // Validação
             'items.*.material_id' => 'required',
             'items.*.quantidade' => 'required|numeric|min:0.01',
         ]);
 
-        // Verificação de Segurança (Opcional):
-        // Checa se tem estoque suficiente antes de salvar. 
-        // Se quiser permitir estoque negativo, pode remover este bloco foreach.
+        // Verificação de Segurança (Estoque Suficiente)
         foreach ($this->items as $index => $item) {
             if (!empty($item['material_id'])) {
                 $material = Material::find($item['material_id']);
-                if ($material && $material->estoque_atual < $item['quantidade']) {
-                    $this->addError("items.{$index}.quantidade", "Estoque insuficiente! Você só tem {$material->estoque_atual} {$material->unidade_medida}.");
-                    return; // Para tudo e avisa o erro
+                
+                // Calcula o uso TOTAL (Qtd da receita * Qtd de peças produzidas)
+                $usoTotal = $item['quantidade'] * $this->quantidade_inicial;
+
+                if ($material && $material->estoque_atual < $usoTotal) {
+                    $this->addError("items.{$index}.quantidade", 
+                        "Falta material! Para fazer {$this->quantidade_inicial} peças, você precisa de {$usoTotal} {$material->unidade_medida}. Só tem {$material->estoque_atual}.");
+                    return;
                 }
             }
         }
 
-        // --- INÍCIO DA CRIAÇÃO ---
-        
-        // 1. Criar o Produto
-        // Definimos 'estoque_pronto' como 1, pois assumimos que você acabou de fabricar a peça.
+        // 1. Criar Produto
         $produto = Produto::create([
             'nome' => $this->nome,
             'descricao' => $this->descricao,
@@ -114,31 +116,32 @@ public function salvar()
             'margem_lucro_percentual' => $this->margem_lucro,
             'custo_materiais_total' => $this->custoMateriais,
             'preco_final' => $this->precoFinal,
-            'estoque_pronto' => 1 
+            'estoque_pronto' => $this->quantidade_inicial // <--- Salva a qtd digitada
         ]);
 
-        // 2. Salvar a Receita E Baixar o Estoque
+        // 2. Salvar Receita e Baixar Estoque
         foreach ($this->items as $item) {
             if(!empty($item['material_id'])) {
                 
-                // A. Vincula na tabela pivô (salva a receita)
+                // Vincula a receita (aqui salva o unitário)
                 $produto->materiais()->attach($item['material_id'], [
                     'quantidade_uso' => $item['quantidade']
                 ]);
 
-                // B. Baixa o estoque do Material
+                // Baixa o estoque (Multiplicando pela quantidade produzida)
                 $material = Material::find($item['material_id']);
                 if ($material) {
-                    $material->estoque_atual = $material->estoque_atual - $item['quantidade'];
+                    $usoTotal = $item['quantidade'] * $this->quantidade_inicial; // <--- Multiplicação
+                    $material->estoque_atual = $material->estoque_atual - $usoTotal;
                     $material->save();
                 }
             }
         }
 
-        // 3. Resetar e Redirecionar
-        session()->flash('message', 'Produto criado e materiais descontados do estoque!');
+        session()->flash('message', "Produto criado! {$this->quantidade_inicial} unidades adicionadas ao estoque.");
         return redirect()->route('produtos.index');
     }
+
 
     public function render()
     {

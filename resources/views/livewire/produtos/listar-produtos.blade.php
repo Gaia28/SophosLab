@@ -46,6 +46,16 @@
                                 </p>
                             </div>
                         </div>
+                        <div class="mt-4 border-t border-gray-100 pt-4">
+    
+    <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded mb-3 mt-3">
+        <span class="text-xs font-bold text-gray-500 uppercase">Em Estoque</span>
+        <span class="text-sm font-bold {{ $produto->estoque_pronto > 0 ? 'text-blue-600' : 'text-red-500' }}">
+            {{ $produto->estoque_pronto }} un
+        </span>
+    </div>
+
+</div>
 
                         <div class="mt-6 flex justify-end space-x-3">
                             <button wire:click="delete({{ $produto->id }})" 
