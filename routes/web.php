@@ -6,6 +6,7 @@ use App\Livewire\Materiais\MaterialEdit;
 use App\Livewire\Materiais\MaterialIndex;
 use App\Livewire\Produtos\CriarProduto;
 use App\Livewire\Produtos\ListarProdutos;
+use App\Livewire\Vendas\RegistrarVenda;
 use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'welcome');
@@ -25,4 +26,7 @@ Route::get('/materiais/{material}/editar', MaterialEdit::class)->name('materiais
     
 Route::get('/produtos/criar', CriarProduto::class)->name('produtos.criar');
 Route::get('/produtos', ListarProdutos::class)->name('produtos.index');
+
+Route::get('/vendas/nova', RegistrarVenda::class)->name('vendas.create');
+
 require __DIR__.'/auth.php';
