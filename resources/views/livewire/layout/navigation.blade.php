@@ -37,18 +37,18 @@ new class extends Component
 
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('materiais.index')" :active="request()->routeIs('materiais*')" wire:navigate>
-                        {{ __('materiais') }}
+                        {{ __('Materiais') }}
                     </x-nav-link>
                 </div>
 
                  <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('produtos.index')" :active="request()->routeIs('produtos.index')" wire:navigate>
-                        {{ __('produtos') }}
+                        {{ __('Produtos') }}
                     </x-nav-link>
                 </div>
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('vendas.create')" :active="request()->routeIs('vendas.create')" wire:navigate>
-                            {{ __('nova venda') }}
+                        <x-nav-link :href="route('vendas.index')" :active="request()->routeIs('vendas.index')" wire:navigate>
+                            {{ __('Vendas') }}
                         </x-nav-link>
                     </div>
                 
@@ -114,22 +114,15 @@ new class extends Component
             </x-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('vendas.create')" :active="request()->routeIs('vendas.create')" wire:navigate>
+            <x-responsive-nav-link :href="route('vendas.index')" :active="request()->routeIs('vendas.create')" wire:navigate>
                 {{ __('Venda') }}
             </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4">
-                <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
-                <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
-            </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile')" wire:navigate>
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
 
                 <!-- Authentication -->
                 <button wire:click="logout" class="w-full text-start">
