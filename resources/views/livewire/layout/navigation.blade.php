@@ -104,8 +104,18 @@ new class extends Component
             </x-responsive-nav-link>
         </div>
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
-                {{ __('materiais') }}
+            <x-responsive-nav-link :href="route('materiais.index')" :active="request()->routeIs('materiais.index')" wire:navigate>
+                {{ __('Materiais') }}
+            </x-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('produtos.index')" :active="request()->routeIs('produtos.index')" wire:navigate>
+                {{ __('Produtos') }}
+            </x-responsive-nav-link>
+        </div>
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('vendas.create')" :active="request()->routeIs('vendas.create')" wire:navigate>
+                {{ __('Venda') }}
             </x-responsive-nav-link>
         </div>
 
