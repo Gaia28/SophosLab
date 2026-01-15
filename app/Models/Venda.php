@@ -8,6 +8,9 @@ class Venda extends Model
 {
     protected $fillable = ['cliente', 'valor_total', 'data_venda'];
     
+    protected $casts = [
+        'data_venda' => 'datetime', 
+    ];
     public function itens()
     {
         return $this->hasMany(ItemVenda::class);
