@@ -12,6 +12,7 @@ class ListarProdutos extends Component
     
     use WithPagination;
 #[Layout('layouts.app')]
+public $search = '';
     public function delete($id)
     {
         Produto::find($id)->delete();
@@ -21,7 +22,10 @@ class ListarProdutos extends Component
     public function render()
     {
         // Pega os produtos do mais novo para o mais antigo
-        $produtos = Produto::orderBy('created_at', 'desc')->paginate(10);
+        $produtos = Produto::query()
+            ->where('nome', 'like', '%' . $this->search . '%')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
         return view('livewire.produtos.listar-produtos', [
             'produtos' => $produtos

@@ -1,6 +1,13 @@
 <div class="py-12">
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-        
+         <div class="mb-4">
+    <input 
+        wire:model.live.debounce.250ms="search" 
+        type="text" 
+        placeholder="Buscar material..." 
+        class="w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+    >
+</div>
         <div class="flex justify-between items-center mb-6 px-4 sm:px-0">
             <h2 class="text-2xl font-bold text-gray-800">Meus Produtos</h2>
             <a href="{{ route('produtos.criar') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow">
