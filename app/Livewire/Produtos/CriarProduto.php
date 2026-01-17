@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Produtos;
 
+use Exception;
 use Livewire\Component;
 use App\Models\Produto;
 use App\Models\Material;
@@ -46,7 +47,26 @@ class CriarProduto extends Component
         $this->items = array_values($this->items); // Reindexar array
     }
 
-    // Hook mágico: roda sempre que o array $items é modificado no front
+    public function selecionarMaterial($id)
+    {
+        // 1. Busca o material no banco
+        $material = \App\Models\Material::find($id);
+
+        if (!$material) {
+            return; // Segurança se não achar
+        }
+
+        // 2. Adiciona ao array de itens
+        $this->items[] = [
+            'material_id' => $material->id,
+            'nome' => $material->nome, // Ou 'name', confira seu banco
+            'quantidade' => 1,
+            'custo_unitario' => $material->custo_atual ?? 0,
+        ];
+        
+        // 3. Opcional: Limpa a busca para fechar a janelinha ou limpar o campo
+        $this->search = ''; 
+    }
     public function updatedItems($value, $key)
     {
         // Descobre qual linha foi alterada (ex: items.0.material_id)
@@ -78,10 +98,14 @@ class CriarProduto extends Component
     // Propriedade Computada: Calcula Preço Final
     public function getPrecoFinalProperty()
     {
-        $custoBase = $this->custoMateriais + (float) $this->custo_mao_de_obra;
-        $margem = (float) $this->margem_lucro;
-        
-        return $custoBase + ($custoBase * ($margem / 100));
+        try{
+            $custoTotal = $this->custoMateriais + (float) $this->custo_mao_de_obra;
+            $margem = (float) $this->margem_lucro;
+            $preco = $custoTotal * (1 + $margem / 100);
+            return round($preco, 2);
+        } catch (Exception $e) {
+            return 0;
+        }
     }
 public function salvar()
     {
