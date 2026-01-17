@@ -1,4 +1,5 @@
-<div class="pb-32 lg:pb-12 pt-6"> <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="pb-32 lg:pb-12 pt-6"> 
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <h2 class="font-bold text-2xl text-gray-800 mb-4">Novo Produto</h2>
 
@@ -20,15 +21,15 @@
                             <textarea wire:model="descricao" rows="2" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
                         </div>
                         <div class="bg-yellow-50 p-3 rounded-md border border-yellow-200">
-        <label class="block text-sm font-bold text-yellow-800">Quantas peças você produziu agora?</label>
-        <div class="flex items-center mt-1">
-            <input type="number" wire:model="quantidade_inicial" class="w-24 rounded-md border-yellow-300 shadow-sm focus:border-yellow-500 text-center font-bold" min="1">
-            <span class="ml-3 text-xs text-gray-600">
-                O sistema vai descontar material suficiente para fazer <b><span x-text="$wire.quantidade_inicial"></span></b> unidades.
-            </span>
-        </div>
-        @error('quantidade_inicial') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-    </div>
+                            <label class="block text-sm font-bold text-yellow-800">Quantas peças você produziu agora?</label>
+                            <div class="flex items-center mt-1">
+                                <input type="number" wire:model="quantidade_inicial" class="w-24 rounded-md border-yellow-300 shadow-sm focus:border-yellow-500 text-center font-bold" min="1">
+                                <span class="ml-3 text-xs text-gray-600">
+                                    O sistema vai descontar material suficiente para fazer <b><span x-text="$wire.quantidade_inicial"></span></b> unidades.
+                                </span>
+                            </div>
+                            @error('quantidade_inicial') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
                     </div>
                 </div>
 
@@ -50,7 +51,8 @@
                                     </svg>
                                 </button>
 
-                                <div class="grid grid-cols-1 gap-2 pr-6"> <div>
+                                <div class="grid grid-cols-1 gap-2 pr-6"> 
+                                    <div>
                                         <select 
                                             wire:model.live="items.{{ $index }}.material_id" 
                                             wire:change="selecionarMaterial({{ $index }})"
@@ -72,6 +74,7 @@
                                         
                                         <div class="text-right w-1/2">
                                             @php
+                                                // Proteção extra aqui também
                                                 $subtotal = ((float)($items[$index]['custo_unitario'] ?? 0)) * ((float)($items[$index]['quantidade'] ?? 0));
                                             @endphp
                                             <span class="text-xs text-gray-500">Custo:</span>
@@ -107,7 +110,7 @@
                     
                     <div class="mb-4">
                         <label class="block text-sm text-gray-600 mb-1">Mão de Obra (R$)</label>
-                        <input type="number" step="0.01" wire:model.live="custo_mao_de_obra" class="w-full rounded-md border-blue-200">
+                        <input type="number" step="0.01" required wire:model.live="custo_mao_de_obra" class="w-full rounded-md border-blue-200">
                     </div>
                     <div class="mb-4">
                         <label class="block text-sm text-gray-600 mb-1">Margem (%)</label>
@@ -121,7 +124,7 @@
                     
                     <div class="flex justify-between items-center mb-2">
                         <span class="text-gray-600 text-sm">Custo Total:</span>
-                        <span class="font-bold text-gray-800">R$ {{ number_format($this->custoMateriais + $this->custo_mao_de_obra, 2, ',', '.')  ?? '00'}}</span>
+                        <span class="font-bold text-gray-800">R$ {{ number_format($this->custoMateriais + (float) $this->custo_mao_de_obra, 2, ',', '.') }}</span>
                     </div>
 
                     <div class="bg-blue-600 text-white p-4 rounded-lg text-center mt-4 shadow-md">
@@ -146,7 +149,7 @@
                             R$ {{ number_format($this->precoFinal, 2, ',', '.') }}
                         </span>
                         <span class="text-[10px] text-gray-400">
-                            Custo: R$ {{ number_format($this->custoMateriais + $this->custo_mao_de_obra, 2, ',', '.') }}
+                            Custo: R$ {{ number_format($this->custoMateriais + (float) $this->custo_mao_de_obra, 2, ',', '.') }}
                         </span>
                     </div>
 
