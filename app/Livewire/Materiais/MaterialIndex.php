@@ -12,6 +12,8 @@ class MaterialIndex extends Component
     use WithPagination;
         #[Layout('layouts.app')]
 
+        public $search = '';
+
     public function delete($id)
     {
         Material::find($id)->delete();
@@ -20,7 +22,11 @@ class MaterialIndex extends Component
 
     public function render()
     {
-        $materiais = Material::orderBy('created_at', 'desc')->paginate(10);
+        $materiais = Material::query()
+            ->where('nome', 'like', '%' . $this->search . '%')
+            ->orWhere('fornecedor', 'like', '%' . $this->search . '%')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
         return view('livewire.materiais.material-index', ['materiais' => $materiais]);
     }
 }
